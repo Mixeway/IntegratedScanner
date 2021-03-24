@@ -200,13 +200,7 @@ public class DependencyTrackScanner implements SecurityScanner {
      *
      */
     private void sendMixewayInfo(PrepareCIOperation prepareCIOperation, GitInformations gitInformations) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        InfoScanPerformed infoScanPerformed = InfoScanPerformed
-                .builder()
-                .branch(gitInformations.getBranchName())
-                .commitId(gitInformations.getCommitId())
-                .scope("opensource")
-                .codeProjectId(prepareCIOperation.getCodeProjectId())
-                .build();
+        InfoScanPerformed infoScanPerformed = new InfoScanPerformed(gitInformations.getBranchName(),gitInformations.getCommitId(),"opensource",prepareCIOperation.getCodeProjectId() );
         RestTemplate restTemplate = MRestTemplate.createRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);

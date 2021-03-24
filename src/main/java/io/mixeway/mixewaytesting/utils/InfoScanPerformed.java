@@ -5,16 +5,18 @@
  */
 package io.mixeway.mixewaytesting.utils;
 
-import lombok.Builder;
-import lombok.Getter;
-
-@Builder
-@Getter
 public class InfoScanPerformed {
     String scope;
     Long codeProjectId;
     String branch;
     String commitId;
+
+    public InfoScanPerformed(String branchName, String commitId, String opensource, Long codeProjectId) {
+        this.branch = branchName;
+        this.codeProjectId = codeProjectId;
+        this.commitId = commitId;
+        this.scope = opensource;
+    }
 
     public String getScope() {
         return scope;

@@ -41,13 +41,16 @@ public class GitHelper {
             RevCommit latestCommit = new Git(repository).log().setMaxCount(1).call().iterator().next();
             String latestCommitHash = latestCommit.getName();
             String branchToSet = branch.equals("git") ? Stream.of(repository.getFullBranch().split("/")).reduce((first, last) -> last).get() : branch;
-            GitInformations gitInformations =  GitInformations
-                    .builder()
-                    .branchName(branchToSet)
-                    .commitId(latestCommitHash)
-                    .projectName(Stream.of(repository.getConfig().getString("remote", "origin", "url").split("/")).reduce((first, last) -> last).get().split(".git")[0])
-                    .repoUrl(repository.getConfig().getString("remote", "origin", "url"))
-                    .build();
+
+            GitInformations gitInformations = new GitInformations(Stream.of(repository
+                    .getConfig()
+                    .getString("remote", "origin", "url")
+                    .split("/"))
+                    .reduce((first, last) -> last)
+                    .get()
+                    .split(".git")[0], latestCommitHash, branchToSet
+                    , repository.getConfig().getString("remote", "origin", "url") );
+
             log.info("[GIT] Processing scan for {} with active branch {} and latest commit {}", gitInformations.getProjectName(), gitInformations.getBranchName(), gitInformations.getCommitId());
             return gitInformations;
         } catch (IOException | GitAPIException e){

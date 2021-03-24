@@ -6,22 +6,38 @@
 package io.mixeway.rest.vulnmanage.model;
 
 import io.mixeway.mixewaytesting.utils.Vuln;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 
-@Builder
-@Getter
-@Setter
-@NoArgsConstructor
 public class SecurityGatewayResponse {
 
     boolean isSecurityPolicyMet;
     String policyResponse;
     List<Vuln> vulnList;
+
+    public boolean isSecurityPolicyMet() {
+        return isSecurityPolicyMet;
+    }
+
+    public void setSecurityPolicyMet(boolean securityPolicyMet) {
+        isSecurityPolicyMet = securityPolicyMet;
+    }
+
+    public String getPolicyResponse() {
+        return policyResponse;
+    }
+
+    public void setPolicyResponse(String policyResponse) {
+        this.policyResponse = policyResponse;
+    }
+
+    public List<Vuln> getVulnList() {
+        return vulnList;
+    }
+
+    public void setVulnList(List<Vuln> vulnList) {
+        this.vulnList = vulnList;
+    }
 
     public SecurityGatewayResponse(boolean isSecurityPolicyMet, String policyResponse, List<Vuln> vulnList){
         this.isSecurityPolicyMet = isSecurityPolicyMet;

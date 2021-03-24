@@ -5,11 +5,6 @@
  */
 package io.mixeway.mixewaytesting.utils;
 
-import lombok.Builder;
-import lombok.Getter;
-
-@Builder
-@Getter
 public class GitInformations {
     private String projectName;
     private String commitId;
