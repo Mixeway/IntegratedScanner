@@ -30,7 +30,7 @@ build-image-csci:
   tags:
     - mixeway
   script:
-    - docker build --no-cache -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest --build-arg HTTPS_PROXY=$HTTPS_PROXY --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg NO_PROXY=$NO_PROXY .
+    - docker build -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest --build-arg HTTPS_PROXY=$HTTPS_PROXY --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg NO_PROXY=$NO_PROXY .
   only:
     - master
 build-image-dop:

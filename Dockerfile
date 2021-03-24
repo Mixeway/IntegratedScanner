@@ -10,8 +10,8 @@ RUN http_proxy=$HTTP_PROXY apt-get install python3-pip -y
 RUN http_proxy=$HTTP_PROXY apt-get install openjdk-8-jre-headless maven npm wget -y  && rm -rf /var/lib/apt/lists/*
 RUN pip3 install cyclonedx-bom
 RUN pip3 install pipreqs
-RUN wget https://github.com/zricethezav/gitleaks/releases/download/v6.1.2/gitleaks-linux-amd64 -O /bin/gitleaks
-RUN wget https://github.com/tfsec/tfsec/releases/download/v0.37.0/tfsec-linux-amd64 -O /bin/tfsec
+RUN http_proxy=$HTTP_PROXY wget https://github.com/zricethezav/gitleaks/releases/download/v6.1.2/gitleaks-linux-amd64 -O /bin/gitleaks
+RUN http_proxy=$HTTP_PROXY wget https://github.com/tfsec/tfsec/releases/download/v0.37.0/tfsec-linux-amd64 -O /bin/tfsec
 RUN chmod +x /bin/gitleaks
 RUN chmod +x /bin/tfsec
 
