@@ -2,6 +2,7 @@ FROM ubuntu
 
 ENV DEBIAN_FRONTEND=noninteractive
 # Required package installation
+RUN env
 RUN apt-get update -y
 RUN apt-get install -y linux-libc-dev
 RUN apt-get install python3-pip -y
@@ -31,7 +32,7 @@ USER mixeway
 
 # Building Mixeway Scanner APP
 WORKDIR /app
-COPY --chown=mixeway ./target/mixewaytesting-0.0.1-SNAPSHOT.jar ./app.jar
+COPY --chown=mixeway ./target/mixewaytesting-1.0.1-SNAPSHOT.jar ./app.jar
 
 ENTRYPOINT ["/usr/bin/java"]
 CMD ["-jar", "/app/app.jar"]
