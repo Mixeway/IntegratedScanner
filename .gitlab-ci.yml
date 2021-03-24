@@ -30,7 +30,7 @@ build-image-csci:
   tags:
     - mixeway
   script:
-    - ls -la target
+    - mvn package -DskipTests
     - docker build -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest --build-arg HTTPS_PROXY=$HTTPS_PROXY --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg NO_PROXY=$NO_PROXY .
   only:
     - master
