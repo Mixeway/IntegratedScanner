@@ -1,9 +1,7 @@
 stages:
   - clean
   - package
-  - build-image-csci
-  - build-image-dop
-  - build-image-cs
+  - build-images
   - push-images
 
 clean:
@@ -25,36 +23,25 @@ package:
   only:
     - master
 
-build-image-csci:
-  stage: build-image-csci
+build-images:
+  stage: build-images
   tags:
     - mixeway
   script:
     - mvn package -DskipTests
     - docker build -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest --build-arg HTTPS_PROXY=$HTTPS_PROXY --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg NO_PROXY=$NO_PROXY .
+    - docker tag ci-docker.corpnet.pl/mixewaytesting/scanner:latest ci-docker.corpnet.pl/library/mixewaytesting/scanner:latest
+    - docker tag ci-docker.corpnet.pl/mixewaytesting/scanner:latest registry.d00b.pl/mixeway/mixewaytesting:latest
+    - docker tag registry.d00b.pl/mixeway/mixewaytesting:latest d4i-harbor.corpnet.pl/mixeway/mixewaytesting:latest
+    - docker images ls
   only:
     - master
-build-image-dop:
-  stage: build-image-dop
-  tags:
-    - mixeway
-  script:
-    - docker build . -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest
-  only:
-    - master
-build-image-cs:
-  stage: build-image-cs
-  tags:
-    - mixeway
-  script:
-    - docker build . -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest
-  only:
-    - master
+
 push-images:
   stage: push-images
   tags:
     - mixeway
   script:
-    - docker build . -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest
+    - echo "pushing"
   only:
     - master
