@@ -1,6 +1,20 @@
 stages:
+  - clean
   - package
-  - build-image
+  - build-image-csci
+  - build-image-dop
+  - build-image-cs
+  - push-images
+
+clean:
+  stage: clean
+  tags:
+    - mixeway
+  script:
+    - mvn clean
+  only:
+    - master
+
 
 package:
   stage: package
@@ -11,8 +25,32 @@ package:
   only:
     - master
 
-build-image:
-  stage: build-image
+build-image-csci:
+  stage: build-image-csci
+  tags:
+    - mixeway
+  script:
+    - docker build . -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest
+  only:
+    - master
+build-image-dop:
+  stage: build-image-dop
+  tags:
+    - mixeway
+  script:
+    - docker build . -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest
+  only:
+    - master
+build-image-cs:
+  stage: build-image-cs
+  tags:
+    - mixeway
+  script:
+    - docker build . -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest
+  only:
+    - master
+push-images:
+  stage: push-images
   tags:
     - mixeway
   script:
