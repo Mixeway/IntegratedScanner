@@ -30,7 +30,7 @@ build-image-csci:
   tags:
     - mixeway
   script:
-    - docker build . -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest
+    - docker build . -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest --build-arg test=test
   only:
     - master
 build-image-dop:
