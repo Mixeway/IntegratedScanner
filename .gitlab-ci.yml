@@ -42,6 +42,6 @@ push-images:
   tags:
     - mixeway
   script:
-    - echo "pushing"
+    - docker push d4i-harbor.corpnet.pl/mixeway/mixewaytesting:latest
   only:
     - master
