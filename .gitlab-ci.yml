@@ -1,0 +1,21 @@
+stages:
+  - package
+  - build-image
+
+package:
+  stage: package
+  tags:
+    - mixeway
+  script:
+    - mvn package -DskipTests
+  only:
+    - master
+
+build-image:
+  stage: build-image
+  tags:
+    - mixeway
+  script:
+    - docker build . -t ci-docker.corpnet.pl/mixewaytesting/scanner:latest
+  only:
+    - master
