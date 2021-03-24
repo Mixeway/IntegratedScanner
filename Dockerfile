@@ -1,9 +1,7 @@
 FROM ubuntu
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV HTTP_PROXY=$HTTP_PROXY
-ENV HTTPS_PROXY=$HTTPS_PROXY
-ENV NO_PROXY=$NO_PROXY
+
 # Required package installation
 RUN env
 RUN apt-get update -y
