@@ -4,10 +4,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Required package installation
 RUN env
-RUN apt-get update -y
-RUN apt-get install -y linux-libc-dev
-RUN apt-get install python3-pip -y
-RUN apt-get install openjdk-8-jre-headless maven npm wget -y  && rm -rf /var/lib/apt/lists/*
+RUN http_proxy=$HTTP_PROXY apt-get update -y
+RUN http_proxy=$HTTP_PROXY apt-get install -y linux-libc-dev
+RUN http_proxy=$HTTP_PROXY apt-get install python3-pip -y
+RUN http_proxy=$HTTP_PROXY apt-get install openjdk-8-jre-headless maven npm wget -y  && rm -rf /var/lib/apt/lists/*
 RUN pip3 install cyclonedx-bom
 RUN pip3 install pipreqs
 RUN wget https://github.com/zricethezav/gitleaks/releases/download/v6.1.2/gitleaks-linux-amd64 -O /bin/gitleaks
