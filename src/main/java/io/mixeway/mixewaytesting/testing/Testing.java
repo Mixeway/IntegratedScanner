@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 @Service
 public class Testing {
@@ -85,7 +84,7 @@ public class Testing {
                 log.warn("[Mixeway Tester] Problem requesting for SAST scan, empty request.");
             }
 
-            io.mixeway.rest.vulnmanage.model.SecurityGatewayResponse vulnerabilities = mixeway.loadVulnerabilities(rootOperation);
+            io.mixeway.rest.vulnmanage.model.MixewaySecurityGatewayResponse vulnerabilities = mixeway.loadVulnerabilities(rootOperation);
             log.info("Vulnerabilities detected {} :", vulnerabilities.getVulnList().size());
             for (Vuln v : vulnerabilities.getVulnList()){
                 if (v.getType().equals(Constants.PACKAGE_SCAN)){

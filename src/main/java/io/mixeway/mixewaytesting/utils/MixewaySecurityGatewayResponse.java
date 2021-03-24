@@ -9,7 +9,7 @@ import io.mixeway.mixewaytesting.utils.Vuln;
 
 import java.util.List;
 
-public class SecurityGatewayResponse {
+public class MixewaySecurityGatewayResponse {
 
     boolean isSecurityPolicyMet;
     String policyResponse;
@@ -39,7 +39,7 @@ public class SecurityGatewayResponse {
         this.vulnList = vulnList;
     }
 
-    public SecurityGatewayResponse(boolean isSecurityPolicyMet, String policyResponse, List<Vuln> vulnList){
+    public MixewaySecurityGatewayResponse(boolean isSecurityPolicyMet, String policyResponse, List<Vuln> vulnList){
         this.isSecurityPolicyMet = isSecurityPolicyMet;
         this.policyResponse = policyResponse;
         this.vulnList = vulnList;

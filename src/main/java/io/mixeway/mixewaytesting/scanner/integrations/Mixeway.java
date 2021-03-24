@@ -7,6 +7,7 @@ package io.mixeway.mixewaytesting.scanner.integrations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.mixeway.mixewaytesting.utils.*;
+import io.mixeway.rest.vulnmanage.model.MixewaySecurityGatewayResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -99,16 +99,16 @@ public class Mixeway {
      * Loading vulnerabilities for project
      * @param rootOperation
      */
-    public io.mixeway.rest.vulnmanage.model.SecurityGatewayResponse loadVulnerabilities(PrepareCIOperation rootOperation) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public MixewaySecurityGatewayResponse loadVulnerabilities(PrepareCIOperation rootOperation) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         RestTemplate restTemplate = MRestTemplate.createRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set(Constants.MIXEWAY_API_KEY, mixewayKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity entity = new HttpEntity(headers);
         try {
-            ResponseEntity<io.mixeway.rest.vulnmanage.model.SecurityGatewayResponse> response = restTemplate.exchange(mixewayUrl +
+            ResponseEntity<io.mixeway.rest.vulnmanage.model.MixewaySecurityGatewayResponse> response = restTemplate.exchange(mixewayUrl +
                             Constants.MIXEWAY_URL_LOAD_VULNS + "/" +rootOperation.getCodeProjectId(),
-                    HttpMethod.GET, entity, io.mixeway.rest.vulnmanage.model.SecurityGatewayResponse.class);
+                    HttpMethod.GET, entity, io.mixeway.rest.vulnmanage.model.MixewaySecurityGatewayResponse.class);
             return response.getBody();
         } catch (HttpServerErrorException | HttpClientErrorException e){
             log.error("[Mixeway] Cannot Start SAST Scan - {}", e.getLocalizedMessage());
