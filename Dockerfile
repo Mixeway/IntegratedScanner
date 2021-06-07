@@ -54,7 +54,8 @@ USER mixeway
 
 # Building Mixeway Scanner APP
 WORKDIR /app
-COPY --chown=mixeway ./target/mixewaytesting-1.0.1-SNAPSHOT.jar ./app.jar
+#COPY --chown=mixeway ./target/mixewaytesting-1.0.1-SNAPSHOT.jar ./app.jar
+COPY --from=maven /app/app.jar ./app.jar
 
 ENTRYPOINT ["/usr/bin/java"]
 CMD ["-jar", "/app/app.jar"]
