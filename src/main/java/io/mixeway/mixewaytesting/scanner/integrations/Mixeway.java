@@ -7,7 +7,6 @@ package io.mixeway.mixewaytesting.scanner.integrations;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.mixeway.mixewaytesting.utils.*;
-import io.mixeway.rest.vulnmanage.model.MixewaySecurityGatewayResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -106,9 +105,9 @@ public class Mixeway {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity entity = new HttpEntity(headers);
         try {
-            ResponseEntity<io.mixeway.rest.vulnmanage.model.MixewaySecurityGatewayResponse> response = restTemplate.exchange(mixewayUrl +
+            ResponseEntity<MixewaySecurityGatewayResponse> response = restTemplate.exchange(mixewayUrl +
                             Constants.MIXEWAY_URL_LOAD_VULNS + "/" +rootOperation.getCodeProjectId(),
-                    HttpMethod.GET, entity, io.mixeway.rest.vulnmanage.model.MixewaySecurityGatewayResponse.class);
+                    HttpMethod.GET, entity, MixewaySecurityGatewayResponse.class);
             return response.getBody();
         } catch (HttpServerErrorException | HttpClientErrorException e){
             log.error("[Mixeway] Cannot Start SAST Scan - {}", e.getLocalizedMessage());

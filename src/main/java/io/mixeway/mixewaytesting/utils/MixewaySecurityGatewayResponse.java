@@ -3,7 +3,7 @@
  * @project  MixewayScanner
  * @author   siewer
  */
-package io.mixeway.rest.vulnmanage.model;
+package io.mixeway.mixewaytesting.utils;
 
 import io.mixeway.mixewaytesting.utils.Vuln;
 
@@ -44,5 +44,6 @@ public class MixewaySecurityGatewayResponse {
         this.policyResponse = policyResponse;
         this.vulnList = vulnList;
     }
+    public MixewaySecurityGatewayResponse(){}
 
 }

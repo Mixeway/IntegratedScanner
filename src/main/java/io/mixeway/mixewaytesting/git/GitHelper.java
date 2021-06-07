@@ -9,6 +9,7 @@ import io.mixeway.mixewaytesting.utils.Constants;
 import io.mixeway.mixewaytesting.utils.GitInformations;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -31,15 +32,21 @@ public class GitHelper {
      */
     public static GitInformations getGitInformations(String sourcePath, String branch) {
         branch = Arrays.stream(branch.split("/")).reduce((first,last) -> last).get();
+        String latestCommitHash;
         final Logger log = LoggerFactory.getLogger(GitHelper.class);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
+
             Repository repository = builder.setGitDir(Paths.get(sourcePath + File.separatorChar + ".git").toFile())
                     .readEnvironment()
                     .findGitDir()
                     .build();
+            log.info("[GIT] Loading GIT info for {}", sourcePath + File.separatorChar + ".git");
+            log.info("[GIT] Config is: {}", repository.getConfig().getBaseConfig().toText());
+
             RevCommit latestCommit = new Git(repository).log().setMaxCount(1).call().iterator().next();
-            String latestCommitHash = latestCommit.getName();
+            latestCommitHash = latestCommit.getName();
+
             String branchToSet = branch.equals("git") ? Stream.of(repository.getFullBranch().split("/")).reduce((first, last) -> last).get() : branch;
 
             GitInformations gitInformations = new GitInformations(Stream.of(repository
@@ -54,6 +61,7 @@ public class GitHelper {
             log.info("[GIT] Processing scan for {} with active branch {} and latest commit {}", gitInformations.getProjectName(), gitInformations.getBranchName(), gitInformations.getCommitId());
             return gitInformations;
         } catch (IOException | GitAPIException e){
+            e.printStackTrace();
             log.error("[GIT] Unable to load GIT informations reason - {}", e.getLocalizedMessage());
             System.exit(1);
         }

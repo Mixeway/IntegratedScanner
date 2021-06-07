@@ -65,7 +65,7 @@ public class CodeHelper {
         if (pip.size() > 3) {
             return SourceCodeType.PYTHON;
         }
-        return null;
+        return SourceCodeType.UNKNOWN;
     }
     /**
      * Check if project is of given type

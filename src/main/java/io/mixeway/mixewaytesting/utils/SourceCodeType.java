@@ -11,5 +11,6 @@ public enum SourceCodeType {
     NPM,
     PYTHON,
     PHP,
-    TF
+    TF,
+    UNKNOWN
 }

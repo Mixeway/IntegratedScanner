@@ -28,6 +28,14 @@ public class Testing {
     String sourcePath;
     @Value("${branch.name}")
     String branch;
+    @Value("${commit.id}")
+    String commit;
+    @Value("${project.name}")
+    String projectName;
+    @Value("${repo.url}")
+    String repoUrl;
+    @Value("${scan.type}")
+    String scanType;
 
     public Testing(Mixeway mixeway, SecurityScannerFactory securityScannerFactory){
         this.mixeway = mixeway;
@@ -39,18 +47,29 @@ public class Testing {
      * 1. Get information from .git -> url, reponame, actvie branch, commitid
      * 2. Send it to Mixeway to get dTrack infos, and CodeProjectID (if not present, create one)
      * 3. Run scan
-     * @throws NoSuchAlgorithmException
-     * @throws KeyStoreException
-     * @throws KeyManagementException
-     * @throws InterruptedException
      */
     public void performTest() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InterruptedException {
         try {
-            PrepareCIOperation rootOperation = null;
-            GitInformations gitInformations = GitHelper.getGitInformations(sourcePath,branch);
-            GitInformations npmAdditionalInformations = null;
             SourceCodeType sourceCodeType = CodeHelper.getSourceProjectTypeFromDirectory(sourcePath);
+            //If scan type is IaC it means that no more integration is needed just run standalone scan of IaC
+            if (scanType.equals(Constants.SCAN_TYPE_IAC)){
+                log.info("[Mixeway Testing] Performing scan in standalone mode for Infrastructure as Code - no Mixeway integration");
+                securityScannerFactory.runIaCStandalone(sourceCodeType);
+                System.exit(0);
+            }
+
+            PrepareCIOperation rootOperation = null;
+            GitInformations gitInformations;
+            // If vaules for branch, commit and projectName are set use them for Mixeway integration, otherwise take them from .git
+            if (!branch.equals("git") && !commit.equals("123") && !repoUrl.equals("url") && !projectName.equals("name")){
+                gitInformations = new GitInformations(projectName,commit,branch,repoUrl);
+            } else {
+                gitInformations = GitHelper.getGitInformations(sourcePath, branch);
+            }
+            GitInformations npmAdditionalInformations = null;
+
             log.info("[Mixeway Tester] Source code Type is: {}", sourceCodeType);
+            // If project is type of MVN and contains JavaScript (NPM) code:
             if (sourceCodeType.equals(SourceCodeType.MVN) && CodeHelper.isProjectOfSourceType(SourceCodeType.NPM, sourcePath)){
                 npmAdditionalInformations = new GitInformations(gitInformations.getProjectName(), gitInformations.getCommitId(),gitInformations.getBranchName(), gitInformations.getRepoUrl());
                 npmAdditionalInformations.setProjectName(npmAdditionalInformations.getProjectName()+ "_"+SourceCodeType.NPM);
@@ -58,11 +77,11 @@ public class Testing {
             }
 
             if (gitInformations != null) {
+                // This one is to create proper entities on Mixeway
                 PrepareCIOperation ciOperation = mixeway.getCIInfo(new GetInfoRequest(gitInformations));
                 rootOperation = ciOperation;
                 if (ciOperation != null) {
                     log.info("[Mixeway Tester] Got request for {} with type {}, proceeding..", gitInformations.getProjectName(), sourceCodeType);
-
                     securityScannerFactory.runScan(sourceCodeType, ciOperation, gitInformations);
                 }
             }
@@ -71,7 +90,6 @@ public class Testing {
                 rootOperation = ciOperation;
                 if (ciOperation != null) {
                     log.info("[Mixeway Tester] Got request for {} with type {}, proceeding..", npmAdditionalInformations.getProjectName(), sourceCodeType);
-
                     securityScannerFactory.runScan(SourceCodeType.NPM, ciOperation, npmAdditionalInformations);
                 }
             }
@@ -84,7 +102,7 @@ public class Testing {
                 log.warn("[Mixeway Tester] Problem requesting for SAST scan, empty request.");
             }
 
-            io.mixeway.rest.vulnmanage.model.MixewaySecurityGatewayResponse vulnerabilities = mixeway.loadVulnerabilities(rootOperation);
+            MixewaySecurityGatewayResponse vulnerabilities = mixeway.loadVulnerabilities(rootOperation);
             log.info("Vulnerabilities detected {} :", vulnerabilities.getVulnList().size());
             for (Vuln v : vulnerabilities.getVulnList()){
                 if (v.getType().equals(Constants.PACKAGE_SCAN)){
@@ -100,6 +118,7 @@ public class Testing {
                 System.exit(1);
             }
         }catch (IllegalStateException | IllegalArgumentException | IOException e){
+            e.printStackTrace();
             log.error("[Mixeway Tester] /opt/sources location is not mounted. Make sure to enable mount e.g. -v $PWD:/opt/sources");
         }
         System.exit(0);

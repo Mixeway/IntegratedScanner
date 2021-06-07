@@ -20,4 +20,6 @@ public class Constants {
     public static final String CODE_SCAN = "codeScanner";
     public static final String TERRAFORM_SCAN = "terraform";
     public static final String SEVERITY_HIGH = "High";
+    public static final String SCAN_TYPE_IAC = "iac";
+    public static final String SCAN_TYPE_APP = "app";
 }

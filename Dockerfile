@@ -4,17 +4,23 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Required package installation
 RUN env
-RUN http_proxy=$HTTP_PROXY apt-get update -y
-RUN http_proxy=$HTTP_PROXY apt-get install -y linux-libc-dev
-RUN http_proxy=$HTTP_PROXY apt-get install python3-pip -y
-RUN http_proxy=$HTTP_PROXY apt-get install openjdk-8-jre-headless maven npm wget -y  && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y
+RUN apt-get install -y linux-libc-dev
+RUN apt-get install python3-pip -y
+RUN apt-get install openjdk-8-jre-headless maven npm wget -y  && rm -rf /var/lib/apt/lists/*
 RUN pip3 install cyclonedx-bom
 RUN pip3 install pipreqs
-RUN https_proxy=$HTTPS_PROXY wget https://github.com/zricethezav/gitleaks/releases/download/v6.1.2/gitleaks-linux-amd64 -O /bin/gitleaks
-RUN https_proxy=$HTTPS_PROXY wget https://github.com/tfsec/tfsec/releases/download/v0.37.0/tfsec-linux-amd64 -O /bin/tfsec
+RUN wget https://github.com/zricethezav/gitleaks/releases/download/v6.1.2/gitleaks-linux-amd64 -O /bin/gitleaks
+RUN wget https://github.com/tfsec/tfsec/releases/download/v0.37.0/tfsec-linux-amd64 -O /bin/tfsec
+RUN wget https://github.com/Checkmarx/kics/releases/download/v1.3.2/kics_1.3.2_linux_x64.tar.gz -O /tmp/kics
+RUN tar -xvf /tmp/kics
+RUN cp kics /bin/kics
+RUN chmod +x /bin/kics
 RUN chmod +x /bin/gitleaks
 RUN chmod +x /bin/tfsec
-
+#RUN npm install -g npm
+RUN wget -O - https://deb.nodesource.com/setup_current.x | bash
+RUN apt-get install -y nodejs
 #copy certificates
 COPY ./utils/ca_tp_pem.crt /root/
 COPY ./utils/ca_tp_pem_sha256.crt /root/
@@ -28,6 +34,10 @@ RUN keytool -importcert -file /root/rootca_pem.crt -keystore /usr/lib/jvm/java-8
 #user
 MAINTAINER siewrgrz
 RUN adduser mixeway
+#RUN mkdir /.npm
+#RUN chown -R 1001:1001 "/.npm"
+RUN mkdir /opt/sources
+RUN chown mixeway /opt/sources
 RUN chown mixeway /bin/gitleaks
 USER mixeway
 

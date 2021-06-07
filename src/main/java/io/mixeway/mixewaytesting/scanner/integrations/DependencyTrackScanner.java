@@ -258,7 +258,7 @@ public class DependencyTrackScanner implements SecurityScanner {
     public void concatenateAllBomsForNPM(List<String> paths) throws IOException, InterruptedException {
             ProcessBuilder append;
             Process appendProcess;
-            append = new ProcessBuilder("bash", "-c", "cyclonedx-bom -a " + StringUtils.join(paths,","));
+            append = new ProcessBuilder("bash", "-c", "./node_modules/\\@cyclonedx/bom/bin/cyclonedx-bom -a " + StringUtils.join(paths,","));
             append.directory(new File(sourcePath));
             appendProcess = append.start();
             appendProcess.waitFor();
@@ -270,7 +270,7 @@ public class DependencyTrackScanner implements SecurityScanner {
         path = path.substring(0,path.length()-1);
         ProcessBuilder install, npmInstall, generate;
         Process installProcess, npmInstallProcess, generateProcess;
-        install = new ProcessBuilder("bash", "-c", "npm install -g @cyclonedx/bom").inheritIO();
+        install = new ProcessBuilder("bash", "-c", "npm install @cyclonedx/bom").inheritIO();
         install.environment().putAll(System.getenv());
         install.directory(new File(path));
         installProcess = install.start();
@@ -282,7 +282,7 @@ public class DependencyTrackScanner implements SecurityScanner {
         npmInstallProcess = npmInstall.start();
         npmInstallProcess.waitFor(5, TimeUnit.MINUTES);
         log.info("[Dependency Track] NPM install for {}", path);
-        generate = new ProcessBuilder("bash", "-c", "cyclonedx-bom").inheritIO();
+        generate = new ProcessBuilder("bash", "-c", "./node_modules/\\@cyclonedx/bom/bin/cyclonedx-bom").inheritIO();
         generate.environment().putAll(System.getenv());
         generate.directory(new File(path));
         generateProcess = generate.start();

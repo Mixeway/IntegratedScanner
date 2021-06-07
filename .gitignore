@@ -4,7 +4,8 @@ target/
 mvn*
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+*.sh
+.gitlab-ci.yml
 ### STS ###
 .apt_generated
 .classpath
