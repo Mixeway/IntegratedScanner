@@ -71,22 +71,27 @@ public class DependencyTrackScanner implements SecurityScanner {
             switch ( sourceCodeType) {
                 case NPM:
                     sendBom(processNpmDependencyTrackScan(), prepareCIOperation);
-                    Thread.sleep(10000);
+                    Thread.sleep(100000);
                     sendMixewayInfo(prepareCIOperation, gitInformations);
                     break;
                 case MVN:
                     sendBom(processMvnDependencyTrack(), prepareCIOperation);
-                    Thread.sleep(10000);
+                    Thread.sleep(100000);
+                    sendMixewayInfo(prepareCIOperation, gitInformations);
+                    break;
+                case GRADLE:
+                    sendBom(processGradleDependencyTrack(), prepareCIOperation);
+                    Thread.sleep(100000);
                     sendMixewayInfo(prepareCIOperation, gitInformations);
                     break;
                 case PHP:
                     sendBom(processPhpDependencyTrack(), prepareCIOperation);
-                    Thread.sleep(10000);
+                    Thread.sleep(100000);
                     sendMixewayInfo(prepareCIOperation, gitInformations);
                     break;
                 case PYTHON:
                     sendBom(processPythonDependencyTrack(), prepareCIOperation);
-                    Thread.sleep(10000);
+                    Thread.sleep(100000);
                     sendMixewayInfo(prepareCIOperation, gitInformations);
                     break;
                 default:
@@ -97,6 +102,17 @@ public class DependencyTrackScanner implements SecurityScanner {
             log.error("[Dependency Track] Error occured: {}", e.getLocalizedMessage());
         }
         return new ArrayList<>();
+    }
+
+    private String processGradleDependencyTrack() throws IOException, InterruptedException {
+        ProcessBuilder generate;
+        Process generateProcess;
+        generate = new ProcessBuilder("bash", "-c", "gradle cyclonedxBom").inheritIO();
+        generate.directory(new File(sourcePath));
+        generateProcess = generate.start();
+        generateProcess.waitFor();
+        log.info("[Dependency Track] Generated SBOM for {}", sourcePath);
+        return sourcePath + File.separatorChar + "build" + File.separatorChar + "reports" + File.separatorChar + "bom.xml";
     }
 
 

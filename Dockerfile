@@ -1,24 +1,31 @@
-FROM maven:3.6-jdk-8 as maven
-WORKDIR /app
+#FROM maven:3.6-jdk-8 as maven
+#WORKDIR /app
+#
+#
+#COPY ./pom.xml ./pom.xml
+#RUN mvn dependency:go-offline -B
+#COPY ./src ./src
+#
+#
+#RUN mvn package -DskipTests && cp target/mixeway*.jar app.jar
 
-
-COPY ./pom.xml ./pom.xml
-RUN mvn dependency:go-offline -B
-COPY ./src ./src
-
-
-RUN mvn package -DskipTests && cp target/mixeway*.jar app.jar
-
-FROM ubuntu
+FROM ubuntu:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Required package installation
 RUN env
+RUN apt clean && apt autoclean
 RUN apt-get update -y
+RUN apt-get install git -y
 RUN apt-get install -y linux-libc-dev
 RUN apt-get install python3-pip -y
-RUN apt-get install openjdk-8-jre-headless maven npm wget -y  && rm -rf /var/lib/apt/lists/*
+RUN apt-get install zip unzip -y
+RUN apt-get install openjdk-8-jdk --fix-missing -y
+RUN apt-get install maven -y
+RUN apt-get install npm -y
+RUN apt-get install wget -y
+RUN rm -rf /var/lib/apt/lists/*
 RUN pip3 install cyclonedx-bom
 RUN pip3 install pipreqs
 RUN wget https://github.com/zricethezav/gitleaks/releases/download/v6.1.2/gitleaks-linux-amd64 -O /bin/gitleaks
@@ -30,8 +37,17 @@ RUN chmod +x /bin/kics
 RUN chmod +x /bin/gitleaks
 RUN chmod +x /bin/tfsec
 #RUN npm install -g npm
+#Checkov
+RUN pip3 install checkov
 RUN wget -O - https://deb.nodesource.com/setup_current.x | bash
 RUN apt-get install -y nodejs
+#Gradle
+RUN wget https://services.gradle.org/distributions/gradle-6.5.1-bin.zip -P /tmp
+RUN unzip -d /opt/gradle /tmp/gradle-6.5.1-bin.zip
+RUN ln -s /opt/gradle/gradle-6.5.1 /opt/gradle/latest
+ENV PATH="/opt/gradle/latest/bin:${PATH}"
+#RUN chmod +x /etc/profile.d/gradle.sh
+#RUN source /etc/profile.d/gradle.sh
 #copy certificates
 COPY ./utils/ca_tp_pem.crt /root/
 COPY ./utils/ca_tp_pem_sha256.crt /root/
@@ -50,12 +66,12 @@ RUN adduser mixeway
 RUN mkdir /opt/sources
 RUN chown mixeway /opt/sources
 RUN chown mixeway /bin/gitleaks
-USER mixeway
+#USER mixeway
 
 # Building Mixeway Scanner APP
 WORKDIR /app
-#COPY --chown=mixeway ./target/mixewaytesting-1.0.1-SNAPSHOT.jar ./app.jar
-COPY --from=maven /app/app.jar ./app.jar
+COPY --chown=mixeway ./target/mixewaytesting-1.0.1-SNAPSHOT.jar ./app.jar
+#COPY --from=maven /app/app.jar ./app.jar
 
 ENTRYPOINT ["/usr/bin/java"]
 CMD ["-jar", "/app/app.jar"]

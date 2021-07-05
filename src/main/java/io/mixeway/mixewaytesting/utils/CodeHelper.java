@@ -40,8 +40,8 @@ public class CodeHelper {
         if(pom.size() > 0){
             return SourceCodeType.MVN;
         }
-        File gradle = new File(sourcePath + File.separatorChar + "build.sh.xml");
-        File gradle2 = new File(sourcePath + File.separatorChar + "build.sh.gradle");
+        File gradle = new File(sourcePath + File.separatorChar + "build.xml");
+        File gradle2 = new File(sourcePath + File.separatorChar + "build.gradle");
         if (gradle.exists() || gradle2.exists()) {
             return SourceCodeType.GRADLE;
         }
