@@ -29,7 +29,9 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN pip3 install cyclonedx-bom
 RUN pip3 install pipreqs
 RUN wget https://github.com/zricethezav/gitleaks/releases/download/v6.1.2/gitleaks-linux-amd64 -O /bin/gitleaks
+#tfsec
 RUN wget https://github.com/tfsec/tfsec/releases/download/v0.37.0/tfsec-linux-amd64 -O /bin/tfsec
+#Kics
 RUN wget https://github.com/Checkmarx/kics/releases/download/v1.3.2/kics_1.3.2_linux_x64.tar.gz -O /tmp/kics
 RUN tar -xvf /tmp/kics
 RUN cp kics /bin/kics
