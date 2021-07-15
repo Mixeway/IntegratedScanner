@@ -41,7 +41,7 @@ public class Kics implements SecurityScanner {
         ProcessBuilder generate;
         Process generateProcess;
         StringBuilder kicsScan = new StringBuilder()
-                .append("kics scan -p ")
+                .append("kics scan -q /assets/queries/ -p ")
                 .append(sourcePath)
                 .append(" -o ")
                 .append(sourcePath).append(File.separatorChar).append("results.json");
