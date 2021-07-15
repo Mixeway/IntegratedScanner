@@ -58,9 +58,7 @@ public class SecurityScannerFactory {
     public void runIaCStandalone(SourceCodeType sourceCodeType) throws IOException, InterruptedException {
         List<Vulnerability> vulnerabilities = new ArrayList<>();
         if (sourceCodeType.equals(SourceCodeType.TF)){
-            log.info("kics");
-            vulnerabilities.addAll(kics.runScan(sourceCodeType));
-            log.info("tfsec");
+            #vulnerabilities.addAll(kics.runScan(sourceCodeType));
             vulnerabilities.addAll(tfsecScanner.runScan(sourceCodeType));
         }
         log.info("Terraform Scan ended, results:");
