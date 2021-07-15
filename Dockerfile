@@ -1,13 +1,13 @@
-#FROM maven:3.6-jdk-8 as maven
-#WORKDIR /app
-#
-#
-#COPY ./pom.xml ./pom.xml
-#RUN mvn dependency:go-offline -B
-#COPY ./src ./src
-#
-#
-#RUN mvn package -DskipTests && cp target/mixeway*.jar app.jar
+FROM maven:3.6-jdk-8 as maven
+WORKDIR /app
+
+
+COPY ./pom.xml ./pom.xml
+RUN mvn dependency:go-offline -B
+COPY ./src ./src
+
+
+RUN mvn package -DskipTests && cp target/mixeway*.jar app.jar
 
 FROM ubuntu:latest
 
@@ -96,8 +96,8 @@ chown -R mixeway:mixeway /tmp/kics
 
 # Building Mixeway Scanner APP
 WORKDIR /app
-COPY --chown=mixeway ./target/mixewaytesting-1.0.1-SNAPSHOT.jar ./app.jar
-#COPY --from=maven /app/app.jar ./app.jar
+#COPY --chown=mixeway ./target/mixewaytesting-1.0.1-SNAPSHOT.jar ./app.jar
+COPY --from=maven /app/app.jar ./app.jar
 
 ENTRYPOINT ["/usr/bin/java"]
 CMD ["-jar", "/app/app.jar"]
