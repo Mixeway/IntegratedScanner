@@ -91,7 +91,7 @@ RUN adduser mixeway
 RUN mkdir /opt/sources
 RUN chown mixeway /opt/sources
 RUN chown mixeway /bin/gitleaks
-chown -R mixeway:mixeway /tmp/kics
+RUN chown -R mixeway:mixeway /tmp/kics
 #USER mixeway
 
 # Building Mixeway Scanner APP
