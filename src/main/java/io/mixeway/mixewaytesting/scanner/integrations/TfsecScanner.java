@@ -63,16 +63,21 @@ public class TfsecScanner implements SecurityScanner {
      * @return List of Vulnerabilities
      */
     private List<Vulnerability> parseTfSecReport() throws IOException {
-        FileInputStream fis = new FileInputStream(sourcePath + File.separatorChar + "tfsec.json");
-        String tfSecReportRaw = IOUtils.toString(fis, StandardCharsets.UTF_8);
-        ObjectMapper objectMapper = new ObjectMapper();
-        TfsecReport tfsecReport = objectMapper.readValue(tfSecReportRaw, TfsecReport.class);
-        List<Vulnerability> vulnerabilityList = new ArrayList<>();
-        for (TfsecResult tfsecResult : tfsecReport.getResults()){
-            vulnerabilityList.add(new Vulnerability((tfsecResult)));
+        try {
+            FileInputStream fis = new FileInputStream(sourcePath + File.separatorChar + "tfsec.json");
+            String tfSecReportRaw = IOUtils.toString(fis, StandardCharsets.UTF_8);
+            ObjectMapper objectMapper = new ObjectMapper();
+            TfsecReport tfsecReport = objectMapper.readValue(tfSecReportRaw, TfsecReport.class);
+            List<Vulnerability> vulnerabilityList = new ArrayList<>();
+            for (TfsecResult tfsecResult : tfsecReport.getResults()) {
+                vulnerabilityList.add(new Vulnerability((tfsecResult)));
+            }
+            log.info("[Tfsec] Processed {} vulnerabilities from terraform project", vulnerabilityList.size());
+            return vulnerabilityList;
+        } catch (NullPointerException e){
+            log.warn("[Tfsec] Nullpointer during parsing TFSEC report, probably empty one..");
         }
-        log.info("[Tfsec] Processed {} vulnerabilities from terraform project", vulnerabilityList.size());
-        return vulnerabilityList;
+        return new ArrayList<>();
     }
 
     /**
